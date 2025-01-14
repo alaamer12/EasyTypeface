@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Typefaces Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&family=Inter:wght@400;600&family=Lora:wght@400;600&family=Montserrat:wght@400;600&family=Noto+Naskh+Arabic:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Genty Demo';
+            src: url('fonts/GentyDemo-Regular.ttf') format('truetype'),
+                 url('fonts/GentyDemo-Regular.otf') format('opentype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .toggle-all-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-all-btn:hover {
+            background: #4b5563;
+        }
+
+        .toggle-all-btn .icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-all-btn.expanded .icon {
+            transform: rotate(180deg);
+        }
+
+        .font-card {
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .font-card:nth-child(1) {
+            background-color: #e0c6ff;  /* Brighter lavender */
+        }
+
+        .font-card:nth-child(2) {
+            background-color: #b8e6d1;  /* Sage green */
+        }
+
+        .font-card:nth-child(3) {
+            background-color: #ffd1b8;  /* Coral */
+        }
+
+        .font-card:nth-child(4) {
+            background-color: #b8d1ff;  /* Sky blue */
+        }
+
+        .font-card:nth-child(5) {
+            background-color: #ffe1b8;  /* Warm sand */
+        }
+
+        .font-card:nth-child(6) {
+            background-color: #d4ffb8;  /* Fresh lime */
+        }
+
+        .font-card:nth-child(7) {
+            background-color: #ffb8d4;  /* Rose pink */
+        }
+
+        .font-card:nth-child(8) {
+            background-color: #c7b8ea;  /* Pastel purple */
+        }
+
+        .font-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .font-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .font-header-content {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .font-name {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .preview-text {
+            font-size: 1.2rem;
+            color: #444;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
+
+        .font-card.expanded .preview-text {
+            display: none;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .font-card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .font-card.expanded .font-card-content {
+            max-height: 1000px;
+        }
+
+        .font-card .toggle-btn {
+            transform: rotate(-90deg);
+        }
+
+        .font-card.expanded .toggle-btn {
+            transform: rotate(0deg);
+        }
+
+        .font-variations {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .variation {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        .variation-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .font-showcase {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .font-example {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .rtl-text {
+            direction: rtl;
+            text-align: right;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .font-details {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .font-license {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .roboto {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .inter {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lora {
+            font-family: 'Lora', serif;
+        }
+
+        .montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .naskh {
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+
+        .cairo {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .genty {
+            font-family: 'Genty Demo', sans-serif;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            font-family: 'Inter', sans-serif;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Beautiful Typefaces</h1>
+            <p style="font-family: 'Inter', sans-serif;">A showcase of elegant and versatile fonts for modern web design</p>
+            <div class="header-controls">
+                <button class="toggle-all-btn">
+                    <span class="icon">▼</span>
+                    <span class="text">Expand All</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="font-showcase">
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Genty Demo</div>
+                        <div class="preview-text genty">The quick brown fox</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example genty">The quick brown fox jumps over the lazy dog</div>
+                    <div class="rtl-text genty">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example genty" style="font-weight: 400">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Italic</div>
+                            <div class="font-example genty" style="font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                    </div>
+                    <div class="font-details">A beautiful custom font with unique characteristics</div>
+                    <div class="font-license">License: Personal Use Only (Commercial license available)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Playfair Display</div>
+                        <div class="preview-text playfair">The quick brown fox</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example playfair">The quick brown fox jumps over the lazy dog</div>
+                    <div class="rtl-text playfair">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example playfair" style="font-weight: 400">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example playfair" style="font-weight: 700">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Italic</div>
+                            <div class="font-example playfair" style="font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold Italic</div>
+                            <div class="font-example playfair" style="font-weight: 700; font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                    </div>
+                    <div class="font-details">A sophisticated serif font perfect for headlines and editorial design</div>
+                    <div class="font-license">License: Open Source (SIL Open Font License)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Roboto</div>
+                        <div class="preview-text roboto">The quick brown fox</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example roboto">The quick brown fox jumps over the lazy dog</div>
+                    <div class="rtl-text roboto">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example roboto" style="font-weight: 400">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example roboto" style="font-weight: 700">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Italic</div>
+                            <div class="font-example roboto" style="font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold Italic</div>
+                            <div class="font-example roboto" style="font-weight: 700; font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                    </div>
+                    <div class="font-details">Google's signature font, known for its clean and modern appearance</div>
+                    <div class="font-license">License: Open Source (Apache License 2.0)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Inter</div>
+                        <div class="preview-text inter">The quick brown fox</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example inter">The quick brown fox jumps over the lazy dog</div>
+                    <div class="rtl-text inter">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example inter" style="font-weight: 400">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example inter" style="font-weight: 700">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Italic</div>
+                            <div class="font-example inter" style="font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold Italic</div>
+                            <div class="font-example inter" style="font-weight: 700; font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                    </div>
+                    <div class="font-details">A versatile sans-serif designed for computer screens</div>
+                    <div class="font-license">License: Open Source (SIL Open Font License)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Lora</div>
+                        <div class="preview-text lora">The quick brown fox</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example lora">The quick brown fox jumps over the lazy dog</div>
+                    <div class="rtl-text lora">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example lora" style="font-weight: 400">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example lora" style="font-weight: 700">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Italic</div>
+                            <div class="font-example lora" style="font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold Italic</div>
+                            <div class="font-example lora" style="font-weight: 700; font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                    </div>
+                    <div class="font-details">An elegant serif font with brushed curves and balanced contrast</div>
+                    <div class="font-license">License: Open Source (SIL Open Font License)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Montserrat</div>
+                        <div class="preview-text montserrat">The quick brown fox</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example montserrat">The quick brown fox jumps over the lazy dog</div>
+                    <div class="rtl-text montserrat">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example montserrat" style="font-weight: 400">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example montserrat" style="font-weight: 700">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Italic</div>
+                            <div class="font-example montserrat" style="font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold Italic</div>
+                            <div class="font-example montserrat" style="font-weight: 700; font-style: italic">The quick brown fox jumps over the lazy dog</div>
+                        </div>
+                    </div>
+                    <div class="font-details">A geometric sans-serif with a contemporary feel</div>
+                    <div class="font-license">License: Open Source (SIL Open Font License)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Noto Naskh Arabic</div>
+                        <div class="preview-text naskh" style="direction: rtl">ولما كان تناسي</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example naskh rtl-text">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example naskh" style="font-weight: 400">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example naskh" style="font-weight: 700">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                        </div>
+                    </div>
+                    <div class="font-details">A beautiful Arabic font optimized for excellent readability</div>
+                    <div class="font-license">License: Open Source (SIL Open Font License)</div>
+                </div>
+            </div>
+
+            <div class="font-card">
+                <div class="font-card-header">
+                    <div class="font-header-content">
+                        <div class="font-name">Cairo</div>
+                        <div class="preview-text cairo" style="direction: rtl">ولما كان تناسي</div>
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="font-card-content">
+                    <div class="font-example cairo rtl-text">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                    <div class="font-variations">
+                        <div class="variation">
+                            <div class="variation-label">Regular</div>
+                            <div class="font-example cairo" style="font-weight: 400">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                        </div>
+                        <div class="variation">
+                            <div class="variation-label">Bold</div>
+                            <div class="font-example cairo" style="font-weight: 700">ولما كان تناسي حقوق الإنسان وازدراؤها قد أفضيا إلى أعمال همجية</div>
+                        </div>
+                    </div>
+                    <div class="font-details">A contemporary Arabic font with a modern feel</div>
+                    <div class="font-license">License: Open Source (SIL Open Font License)</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created with ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        const toggleAllBtn = document.querySelector('.toggle-all-btn');
+        const allCards = document.querySelectorAll('.font-card');
+        let allExpanded = false;
+
+        toggleAllBtn.addEventListener('click', () => {
+            allExpanded = !allExpanded;
+            allCards.forEach(card => {
+                if (allExpanded) {
+                    card.classList.add('expanded');
+                } else {
+                    card.classList.remove('expanded');
+                }
+            });
+            toggleAllBtn.classList.toggle('expanded');
+            toggleAllBtn.querySelector('.text').textContent = allExpanded ? 'Collapse All' : 'Expand All';
+        });
+
+        document.querySelectorAll('.font-card').forEach(card => {
+            const toggleBtn = card.querySelector('.toggle-btn');
+            const content = card.querySelector('.font-card-content');
+            
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                card.classList.toggle('expanded');
+            });
+
+            card.addEventListener('click', () => {
+                card.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+</html>
