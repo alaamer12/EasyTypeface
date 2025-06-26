@@ -215,6 +215,16 @@ class FontManager {
                 return;
             }
 
+            // Check if font card already exists in the DOM
+            const existingCards = document.querySelectorAll('.font-card');
+            for (const card of existingCards) {
+                const cardFontName = card.querySelector('.font-name').textContent;
+                if (cardFontName === fontName) {
+                    showToast(`Font "${fontName}" is already in the showcase`, 'info');
+                    return;
+                }
+            }
+
             // Parse variations
             const variations = this.parseVariations(variationString);
             
@@ -362,9 +372,19 @@ class FontManager {
             card.classList.toggle('expanded');
         });
         
+        // Add to showcase
+        this.fontShowcase.appendChild(card);
+        
         // Ensure canvas button is present and functional
         const canvasBtn = card.querySelector('.canvas-btn');
         if (canvasBtn) {
+            // Create maximize icon for canvas button
+            const icon = document.createElement('i');
+            icon.setAttribute('data-feather', 'maximize-2');
+            canvasBtn.innerHTML = ''; // Clear any existing content
+            canvasBtn.appendChild(icon);
+            
+            // Add click event
             canvasBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 openCanvasPanel(card);
@@ -373,13 +393,8 @@ class FontManager {
         
         // Initialize Feather icons for the new card
         if (typeof feather !== 'undefined') {
-            card.querySelectorAll('[data-feather]').forEach(icon => {
-                feather.replace(icon);
-            });
+            feather.replace();
         }
-        
-        // Add to showcase
-        this.fontShowcase.appendChild(card);
     }
 
     createVariations(card, fontName, variations, sampleText, direction) {
@@ -604,15 +619,29 @@ function createDefaultFontCard(fontData) {
         card.classList.toggle('expanded');
     });
     
-    // Initialize Feather icons for the new card
-    if (typeof feather !== 'undefined') {
-        card.querySelectorAll('[data-feather]').forEach(icon => {
-            feather.replace(icon);
+    // Add to showcase
+    document.querySelector('.font-showcase').appendChild(card);
+    
+    // Ensure canvas button is present and functional
+    const canvasBtn = card.querySelector('.canvas-btn');
+    if (canvasBtn) {
+        // Create maximize icon for canvas button
+        const icon = document.createElement('i');
+        icon.setAttribute('data-feather', 'maximize-2');
+        canvasBtn.innerHTML = ''; // Clear any existing content
+        canvasBtn.appendChild(icon);
+        
+        // Add click event
+        canvasBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openCanvasPanel(card);
         });
     }
     
-    // Add to showcase
-    document.querySelector('.font-showcase').appendChild(card);
+    // Initialize Feather icons for the new card
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
 }
 
 // Initialize the app
