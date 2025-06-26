@@ -272,6 +272,12 @@ header {
     flex: 1;
 }
 
+.font-card-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
 .font-name {
     font-size: var(--font-size-md);
     color: var(--color-text);
@@ -293,14 +299,61 @@ header {
     display: none;
 }
 
-.toggle-btn {
+.toggle-btn, .canvas-btn {
     background: none;
     border: none;
-    font-size: var(--font-size-lg);
     cursor: pointer;
     padding: var(--spacing-xs);
-    transition: transform var(--transition-normal);
+    transition: all var(--transition-normal);
     color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-btn {
+    font-size: var(--font-size-lg);
+    transition: transform var(--transition-normal);
+}
+
+.canvas-btn {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.canvas-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .canvas-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tooltip for canvas button */
+.canvas-btn[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-secondary);
+    color: white;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast);
+    pointer-events: none;
+    z-index: 100;
+}
+
+.canvas-btn[data-tooltip]:hover:before {
+    opacity: 1;
+    visibility: visible;
 }
 
 .font-card-content {
@@ -343,6 +396,24 @@ header {
     color: var(--color-text-light);
     margin-bottom: var(--spacing-xs);
     font-weight: 600;
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-sm);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.canvas-variation:hover .variation-label {
+    background: rgba(0, 0, 0, 0.1);
+    transform: translateX(5px);
+}
+
+[data-theme="dark"] .variation-label {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .canvas-variation:hover .variation-label {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 h1 {
@@ -608,10 +679,18 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus {
     .font-showcase {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .canvas-showcase {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (min-width: 1200px) {
     .font-showcase {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .canvas-showcase {
         grid-template-columns: repeat(3, 1fr);
     }
 }
@@ -675,5 +754,664 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus {
     .font-card-content {
         max-height: none !important;
         overflow: visible;
+    }
+}
+
+/* Font Canvas Panel - Enhanced with animations */
+.font-canvas-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-card);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95);
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1), 
+                visibility 0.4s cubic-bezier(0.19, 1, 0.22, 1), 
+                transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    overflow-y: auto;
+}
+
+.font-canvas-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    animation: canvas-panel-in 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes canvas-panel-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.font-canvas-panel.closing {
+    animation: canvas-panel-out 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes canvas-panel-out {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    background: var(--color-card);
+    z-index: 10;
+    animation: slide-down 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.canvas-font-name {
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-size-lg);
+    margin: 0;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.canvas-font-name::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.canvas-font-name:hover::after {
+    width: 100%;
+}
+
+.canvas-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.canvas-options {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-lg);
+    transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .canvas-options {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.canvas-options:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .canvas-options:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.canvas-select {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background: var(--color-card);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.canvas-select:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.canvas-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.close-canvas-btn {
+    background: var(--color-secondary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.close-canvas-btn:hover {
+    background: var(--color-secondary-dark);
+    transform: rotate(90deg);
+}
+
+.canvas-content {
+    padding: var(--spacing-lg);
+    flex: 1;
+    animation: fade-in 0.7s ease forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Canvas Background Variations */
+.canvas-bg-light {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.canvas-bg-dark {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.canvas-bg-colored {
+    background-color: #f0e6ff;
+    color: #333333;
+}
+
+.canvas-bg-gradient {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #333333;
+}
+
+/* Canvas Font Size Variations */
+.canvas-size-small {
+    font-size: var(--font-size-lg);
+}
+
+.canvas-size-medium {
+    font-size: var(--font-size-xl);
+}
+
+.canvas-size-large {
+    font-size: calc(var(--font-size-xl) * 1.5);
+}
+
+.canvas-size-xlarge {
+    font-size: calc(var(--font-size-xl) * 2);
+}
+
+/* Font canvas showcase */
+.canvas-showcase {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+}
+
+/* Canvas sections with animated gradients */
+.canvas-section {
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    background: rgba(255, 255, 255, 0.5);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    animation: section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.canvas-section:nth-child(1) { animation-delay: 0.1s; }
+.canvas-section:nth-child(2) { animation-delay: 0.2s; }
+.canvas-section:nth-child(3) { animation-delay: 0.3s; }
+.canvas-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes section-appear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Gradient backgrounds for sections */
+.canvas-section.gradient-1 {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite, section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    color: #fff;
+}
+
+.canvas-section.gradient-2 {
+    background: linear-gradient(-45deg, #4facfe, #00f2fe);
+    background-size: 200% 200%;
+    animation: gradient-shift 10s ease infinite, section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    color: #fff;
+}
+
+.canvas-section.gradient-3 {
+    background: linear-gradient(-45deg, #a18cd1, #fbc2eb);
+    background-size: 200% 200%;
+    animation: gradient-shift 12s ease infinite, section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    color: #333;
+}
+
+.canvas-section.gradient-4 {
+    background: linear-gradient(-45deg, #84fab0, #8fd3f4);
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite, section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    color: #333;
+}
+
+.canvas-section.gradient-5 {
+    background: linear-gradient(-45deg, #f6d365, #fda085);
+    background-size: 200% 200%;
+    animation: gradient-shift 10s ease infinite, section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    color: #333;
+}
+
+.canvas-section.gradient-6 {
+    background: linear-gradient(-45deg, #5ee7df, #b490ca);
+    background-size: 200% 200%;
+    animation: gradient-shift 12s ease infinite, section-appear 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    color: #333;
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Dark theme adjustments for gradients */
+[data-theme="dark"] .canvas-section.gradient-3,
+[data-theme="dark"] .canvas-section.gradient-4,
+[data-theme="dark"] .canvas-section.gradient-5,
+[data-theme="dark"] .canvas-section.gradient-6 {
+    color: #f8f9fa;
+}
+
+[data-theme="dark"] .canvas-section {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.canvas-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-sm);
+    color: inherit;
+    position: relative;
+    display: inline-block;
+}
+
+.canvas-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.canvas-section:hover .canvas-section-title::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Canvas variations and displays - Enhanced */
+.canvas-variation {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.canvas-variation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.canvas-variation:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.canvas-variation:hover::before {
+    opacity: 1;
+}
+
+[data-theme="dark"] .canvas-variation {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .canvas-variation::before {
+    background: linear-gradient(45deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+}
+
+.canvas-font-display {
+    margin-top: var(--spacing-sm);
+    line-height: 1.5;
+    overflow-wrap: break-word;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+    position: relative;
+}
+
+.canvas-variation:hover .canvas-font-display {
+    transform: scale(1.02);
+}
+
+/* Add subtle text shadow for better readability on gradients */
+.gradient-1 .canvas-font-display,
+.gradient-2 .canvas-font-display {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.gradient-3 .canvas-font-display,
+.gradient-4 .canvas-font-display,
+.gradient-5 .canvas-font-display,
+.gradient-6 .canvas-font-display {
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .canvas-font-display {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Canvas size-specific styles */
+.canvas-font-display.canvas-size-small {
+    font-size: var(--font-size-lg);
+    line-height: 1.5;
+}
+
+.canvas-font-display.canvas-size-medium {
+    font-size: var(--font-size-xl);
+    line-height: 1.6;
+}
+
+.canvas-font-display.canvas-size-large {
+    font-size: calc(var(--font-size-xl) * 1.5);
+    line-height: 1.4;
+}
+
+.canvas-font-display.canvas-size-xlarge {
+    font-size: calc(var(--font-size-xl) * 2);
+    line-height: 1.3;
+}
+
+/* Loading indicator for canvas */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-family: 'Inter', sans-serif;
+    color: var(--color-text-light);
+    font-size: var(--font-size-md);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* Improve feather icons alignment */
+.canvas-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    stroke: currentColor;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.close-canvas-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Variation label enhancement */
+.variation-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-sm);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.canvas-variation:hover .variation-label {
+    background: rgba(0, 0, 0, 0.1);
+    transform: translateX(5px);
+}
+
+[data-theme="dark"] .variation-label {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .canvas-variation:hover .variation-label {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Section quote and description styling */
+.section-quote,
+.section-description {
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    border-left: 3px solid currentColor;
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+    max-width: 90%;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.canvas-section:hover .section-quote,
+.canvas-section:hover .section-description {
+    opacity: 1;
+    transform: translateX(5px);
+}
+
+/* Canvas controls enhancement */
+.canvas-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.canvas-options {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-lg);
+    transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .canvas-options {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.canvas-options:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .canvas-options:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.canvas-select {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background: var(--color-card);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.canvas-select:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.canvas-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Canvas header enhancement */
+.canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    background: var(--color-card);
+    z-index: 10;
+    animation: slide-down 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.canvas-font-name {
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-size-lg);
+    margin: 0;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.canvas-font-name::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.canvas-font-name:hover::after {
+    width: 100%;
+}
+
+/* Additional responsive adjustments for canvas panel */
+@media (max-width: 767px) {
+    .canvas-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        align-items: flex-start;
+    }
+    
+    .canvas-controls {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .canvas-options {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .canvas-select {
+        width: 100%;
+    }
+    
+    .close-canvas-btn {
+        position: absolute;
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+    }
+    
+    .canvas-font-display {
+        max-width: 100%;
+        overflow-x: auto;
     }
 }

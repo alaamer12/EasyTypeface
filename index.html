@@ -3,16 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyTypeface - Beautiful Typefaces Showcase</title>
-    <meta name="description" content="A showcase of elegant and versatile fonts for modern web design">
-    <meta name="theme-color" content="#4CAF50">
+    <title>EasyTypeface - Beautiful Typefaces Showcase for Web Design</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="description" content="Explore and test a curated collection of elegant and versatile fonts for modern web design. EasyTypeface makes typography selection effortless.">
+    <meta name="keywords" content="typography, fonts, web design, typefaces, font showcase, google fonts">
+    <meta name="author" content="EasyTypeface">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#3B82F6">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://easytypeface.com/">
+    <meta property="og:title" content="EasyTypeface - Beautiful Typefaces Showcase">
+    <meta property="og:description" content="A showcase of elegant and versatile fonts for modern web design. Test fonts in various sizes and backgrounds.">
+    <meta property="og:image" content="og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://easytypeface.com/">
+    <meta property="twitter:title" content="EasyTypeface - Beautiful Typefaces Showcase">
+    <meta property="twitter:description" content="A showcase of elegant and versatile fonts for modern web design. Test fonts in various sizes and backgrounds.">
+    <meta property="twitter:image" content="og-image.png">
+    
+    <!-- Favicon -->
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    
+    <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&family=Inter:wght@400;600&family=Lora:wght@400;600&family=Montserrat:wght@400;600&family=Noto+Naskh+Arabic:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fontfaceobserver/2.3.0/fontfaceobserver.js"></script>
     <link rel="stylesheet" href="style.css">
+    <!-- Add Feather Icons for elegant UI icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://easytypeface.com/">
 </head>
 <body>
     <div class="container">
@@ -43,7 +75,12 @@
                         <div class="font-name"></div>
                         <div class="preview-text"></div>
                     </div>
-                    <button class="toggle-btn" aria-label="Toggle font details">▼</button>
+                    <div class="font-card-actions">
+                        <button class="canvas-btn" aria-label="Open font canvas" data-tooltip="View in canvas mode">
+                            <i data-feather="maximize-2"></i>
+                        </button>
+                        <button class="toggle-btn" aria-label="Toggle font details">▼</button>
+                    </div>
                 </div>
                 <div class="font-card-content">
                     <div class="font-example"></div>
@@ -87,6 +124,37 @@
             </form>
         </dialog>
 
+        <!-- Font Canvas Panel -->
+        <div id="fontCanvasPanel" class="font-canvas-panel" aria-labelledby="canvasPanelTitle">
+            <div class="canvas-header">
+                <h2 id="canvasPanelTitle" class="canvas-font-name">Font Display</h2>
+                <div class="canvas-controls">
+                    <div class="canvas-options">
+                        <label for="canvasBgSelect">Background:</label>
+                        <select id="canvasBgSelect" class="canvas-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="colored">Colored</option>
+                            <option value="gradient">Gradient</option>
+                        </select>
+                        <label for="canvasSizeSelect">Size:</label>
+                        <select id="canvasSizeSelect" class="canvas-select">
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="xlarge">XL</option>
+                        </select>
+                    </div>
+                    <button id="closeCanvasBtn" class="close-canvas-btn" aria-label="Close canvas panel">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="canvas-content">
+                <!-- Canvas content will be dynamically generated -->
+            </div>
+        </div>
+
         <div class="toast-container" role="region" aria-live="polite"></div>
 
         <button class="theme-toggle" aria-label="Toggle dark/light theme">
@@ -110,6 +178,25 @@
             <p>Created with ❤️ | <a href="https://github.com/yourusername/easy-typeface" target="_blank" rel="noopener noreferrer">GitHub</a></p>
         </footer>
     </div>
+    
+    <!-- Load JavaScript at the end for performance -->
     <script src="script.js"></script>
+    
+    <!-- Structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "EasyTypeface",
+        "description": "A showcase of elegant and versatile fonts for modern web design",
+        "applicationCategory": "Design",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
 </body>
 </html>

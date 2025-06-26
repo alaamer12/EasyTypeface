@@ -510,6 +510,13 @@ class FontManager {
         // Add event listeners
         this.addCardEventListeners(card);
         
+        // Initialize Feather icons for the new card
+        if (typeof feather !== 'undefined') {
+            card.querySelectorAll('[data-feather]').forEach(icon => {
+                feather.replace(icon);
+            });
+        }
+        
         // Add to showcase
         this.fontShowcase.appendChild(card);
     }
@@ -749,6 +756,13 @@ function createDefaultFontCard(fontData) {
         card.classList.toggle('expanded');
     });
     
+    // Initialize Feather icons for the new card
+    if (typeof feather !== 'undefined') {
+        card.querySelectorAll('[data-feather]').forEach(icon => {
+            feather.replace(icon);
+        });
+    }
+    
     // Add to showcase
     document.querySelector('.font-showcase').appendChild(card);
 }
@@ -812,4 +826,279 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleAllBtn.classList.toggle('expanded');
         toggleAllBtn.querySelector('.text').textContent = allExpanded ? 'Collapse All' : 'Toggle All';
     });
+    
+    // Initialize Canvas Panel functionality
+    initializeCanvasPanel();
+    
+    // Initialize Feather icons
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
 });
+
+// Canvas Panel functionality
+function initializeCanvasPanel() {
+    const canvasPanel = document.getElementById('fontCanvasPanel');
+    const closeCanvasBtn = document.getElementById('closeCanvasBtn');
+    const canvasBgSelect = document.getElementById('canvasBgSelect');
+    const canvasSizeSelect = document.getElementById('canvasSizeSelect');
+    const canvasContent = document.querySelector('.canvas-content');
+    
+    // Close canvas panel with animation
+    closeCanvasBtn.addEventListener('click', () => {
+        canvasPanel.classList.add('closing');
+        setTimeout(() => {
+            canvasPanel.classList.remove('active');
+            canvasPanel.classList.remove('closing');
+            document.body.style.overflow = '';
+        }, 400); // Match the animation duration
+    });
+    
+    // Background change
+    canvasBgSelect.addEventListener('change', () => {
+        updateCanvasBackground(canvasBgSelect.value);
+    });
+    
+    // Font size change
+    canvasSizeSelect.addEventListener('change', () => {
+        updateCanvasFontSize(canvasSizeSelect.value);
+    });
+    
+    // Add click event to canvas buttons (will be delegated for dynamically added elements)
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.canvas-btn')) {
+            const fontCard = e.target.closest('.font-card');
+            if (fontCard) {
+                openCanvasPanel(fontCard);
+            }
+        }
+    });
+    
+    // Helper functions
+    function updateCanvasBackground(bgType) {
+        canvasContent.className = 'canvas-content';
+        canvasContent.classList.add(`canvas-bg-${bgType}`);
+        
+        // If gradient is selected, apply random gradients to each section
+        if (bgType === 'gradient') {
+            applyRandomGradients();
+        } else {
+            // Remove gradient classes when not in gradient mode
+            document.querySelectorAll('.canvas-section').forEach(section => {
+                for (let i = 1; i <= 6; i++) {
+                    section.classList.remove(`gradient-${i}`);
+                }
+            });
+        }
+    }
+    
+    function applyRandomGradients() {
+        const sections = document.querySelectorAll('.canvas-section');
+        const gradientClasses = ['gradient-1', 'gradient-2', 'gradient-3', 'gradient-4', 'gradient-5', 'gradient-6'];
+        
+        sections.forEach(section => {
+            // Remove any existing gradient classes
+            gradientClasses.forEach(cls => section.classList.remove(cls));
+            
+            // Apply a random gradient class
+            const randomGradient = gradientClasses[Math.floor(Math.random() * gradientClasses.length)];
+            section.classList.add(randomGradient);
+        });
+    }
+    
+    function updateCanvasFontSize(sizeType) {
+        const fontDisplay = canvasContent.querySelectorAll('.canvas-font-display');
+        fontDisplay.forEach(el => {
+            el.className = 'canvas-font-display';
+            el.classList.add(`canvas-size-${sizeType}`);
+        });
+    }
+    
+    function openCanvasPanel(fontCard) {
+        // Get font info
+        const fontName = fontCard.querySelector('.font-name').textContent;
+        const isRTL = fontCard.querySelector('.rtl-text') && 
+                      fontCard.querySelector('.rtl-text').style.display !== 'none';
+        const direction = isRTL ? 'rtl' : 'ltr';
+        
+        // Update canvas panel title
+        document.querySelector('.canvas-font-name').textContent = fontName;
+        
+        // Get variations
+        const variations = [];
+        fontCard.querySelectorAll('.variation').forEach(variation => {
+            const label = variation.querySelector('.variation-label').textContent;
+            const style = variation.querySelector('.font-example').getAttribute('style');
+            variations.push({ label, style });
+        });
+        
+        // Generate canvas content
+        generateCanvasContent(fontName, variations, isRTL);
+        
+        // Set initial background and size
+        updateCanvasBackground(canvasBgSelect.value);
+        updateCanvasFontSize(canvasSizeSelect.value);
+        
+        // Show canvas with animation
+        canvasPanel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function generateCanvasContent(fontName, variations, isRTL) {
+        const sampleText = isRTL 
+            ? 'الخط الجميل يمكن أن يخلق إحساساً بالانسجام والتناغم'
+            : 'The quick brown fox jumps over the lazy dog';
+        const sampleParagraph = isRTL
+            ? 'يعد التصميم الجرافيكي أحد أهم المجالات الفنية في عصرنا الحديث. إنه يجمع بين الإبداع والتقنية لإيصال رسائل بصرية مؤثرة. اختيار الخطوط المناسبة يلعب دوراً محورياً في نجاح أي تصميم، حيث تضفي الشخصية والأسلوب.'
+            : 'Typography is the art and technique of arranging type to make written language legible, readable, and appealing when displayed. The arrangement of type involves selecting typefaces, point sizes, line lengths, line-spacing, and letter-spacing, and adjusting the space between pairs of letters.';
+
+        const pangramText = isRTL
+            ? 'نص حكيم له سر قاطع وذو شأن عظيم مكتوب على ثوب أخضر ومغلف بجلد أزرق'
+            : 'Sphinx of black quartz, judge my vow.';
+            
+        const alphabetText = isRTL
+            ? 'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي'
+            : 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9';
+
+        // Clear previous content
+        canvasContent.innerHTML = '';
+        
+        // Create showcase container
+        const showcase = document.createElement('div');
+        showcase.className = 'canvas-showcase';
+        
+        // Add headline section
+        const headlineSection = createCanvasSection('Headlines', fontName, variations, pangramText, isRTL);
+        showcase.appendChild(headlineSection);
+        
+        // Add paragraph section
+        const paragraphSection = createCanvasSection('Paragraph', fontName, variations, sampleParagraph, isRTL);
+        showcase.appendChild(paragraphSection);
+        
+        // Add alphabet section
+        const alphabetSection = createCanvasSection('Alphabet & Numbers', fontName, variations, alphabetText, isRTL);
+        showcase.appendChild(alphabetSection);
+        
+        // Add size comparison section
+        showcase.appendChild(createSizeComparisonSection(fontName, sampleText, isRTL));
+        
+        // Add the showcase to the canvas content
+        canvasContent.appendChild(showcase);
+        
+        // Apply random gradients if in gradient mode
+        if (canvasBgSelect.value === 'gradient') {
+            applyRandomGradients();
+        }
+    }
+    
+    function createCanvasSection(title, fontName, variations, text, isRTL) {
+        const section = document.createElement('div');
+        section.className = 'canvas-section';
+        
+        // Add animated entry
+        section.style.animationDelay = `${Math.random() * 0.3 + 0.1}s`;
+        
+        const sectionTitle = document.createElement('h3');
+        sectionTitle.className = 'canvas-section-title';
+        sectionTitle.textContent = title;
+        section.appendChild(sectionTitle);
+        
+        // Add a random quote or description based on the section
+        if (title === 'Headlines') {
+            const quote = document.createElement('p');
+            quote.className = 'section-quote';
+            quote.textContent = isRTL 
+                ? 'العناوين هي أول ما يجذب انتباه القارئ'
+                : 'Headlines are what grab the reader\'s attention first';
+            quote.style.opacity = '0.8';
+            quote.style.fontStyle = 'italic';
+            quote.style.marginBottom = '1rem';
+            section.appendChild(quote);
+        }
+        
+        variations.forEach(variation => {
+            const fontDisplay = document.createElement('div');
+            fontDisplay.className = 'canvas-font-display canvas-size-medium';
+            fontDisplay.textContent = text;
+            fontDisplay.style.fontFamily = `'${fontName}'`;
+            
+            // Apply variation style
+            if (variation.style) {
+                const styleAttributes = variation.style.split(';');
+                styleAttributes.forEach(attr => {
+                    if (attr.trim()) {
+                        const [property, value] = attr.split(':');
+                        if (property && property.trim() !== 'direction') { // We'll set direction separately
+                            fontDisplay.style[property.trim()] = value ? value.trim() : '';
+                        }
+                    }
+                });
+            }
+            
+            // Set direction
+            fontDisplay.style.direction = isRTL ? 'rtl' : 'ltr';
+            
+            // Add variation label
+            const variationLabel = document.createElement('div');
+            variationLabel.className = 'variation-label';
+            variationLabel.textContent = variation.label;
+            
+            const variationContainer = document.createElement('div');
+            variationContainer.className = 'canvas-variation';
+            variationContainer.appendChild(variationLabel);
+            variationContainer.appendChild(fontDisplay);
+            
+            section.appendChild(variationContainer);
+        });
+        
+        return section;
+    }
+    
+    function createSizeComparisonSection(fontName, text, isRTL) {
+        const section = document.createElement('div');
+        section.className = 'canvas-section';
+        
+        const sectionTitle = document.createElement('h3');
+        sectionTitle.className = 'canvas-section-title';
+        sectionTitle.textContent = 'Size Comparison';
+        section.appendChild(sectionTitle);
+        
+        // Add a description for the size comparison section
+        const description = document.createElement('p');
+        description.className = 'section-description';
+        description.textContent = isRTL 
+            ? 'مقارنة بين أحجام الخط المختلفة لمساعدتك على اختيار الحجم المناسب'
+            : 'Compare different font sizes to help you choose the right size for your design';
+        description.style.opacity = '0.8';
+        description.style.marginBottom = '1rem';
+        section.appendChild(description);
+        
+        const sizes = [
+            { name: 'Small', class: 'canvas-size-small' },
+            { name: 'Medium', class: 'canvas-size-medium' },
+            { name: 'Large', class: 'canvas-size-large' },
+            { name: 'Extra Large', class: 'canvas-size-xlarge' }
+        ];
+        
+        sizes.forEach(size => {
+            const fontDisplay = document.createElement('div');
+            fontDisplay.className = `canvas-font-display ${size.class}`;
+            fontDisplay.textContent = text;
+            fontDisplay.style.fontFamily = `'${fontName}'`;
+            fontDisplay.style.direction = isRTL ? 'rtl' : 'ltr';
+            
+            const sizeLabel = document.createElement('div');
+            sizeLabel.className = 'variation-label';
+            sizeLabel.textContent = size.name;
+            
+            const sizeContainer = document.createElement('div');
+            sizeContainer.className = 'canvas-variation';
+            sizeContainer.appendChild(sizeLabel);
+            sizeContainer.appendChild(fontDisplay);
+            
+            section.appendChild(sizeContainer);
+        });
+        
+        return section;
+    }
+}
