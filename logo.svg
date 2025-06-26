@@ -1,12 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <!-- Background circle -->
-  <circle cx="50" cy="50" r="48" fill="#4CAF50" />
-  <circle cx="50" cy="50" r="44" fill="white" />
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="letterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe"/>
+      <stop offset="100%" style="stop-color:#00f2fe"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.2)"/>
+    </filter>
+  </defs>
   
-  <!-- Letter "E" stylized -->
-  <path d="M30,25 L70,25 L70,35 L40,35 L40,45 L65,45 L65,55 L40,55 L40,65 L70,65 L70,75 L30,75 Z" fill="#4CAF50" />
+  <!-- Background circle with gradient -->
+  <circle cx="50" cy="50" r="48" fill="url(#bgGradient)" filter="url(#shadow)"/>
+  <circle cx="50" cy="50" r="44" fill="white" opacity="0.1"/>
+  <circle cx="50" cy="50" r="40" fill="white"/>
   
-  <!-- Small "T" for Typeface -->
-  <rect x="45" y="15" width="10" height="5" fill="#4CAF50" />
-  <rect x="47.5" y="15" width="5" height="10" fill="#4CAF50" />
-</svg> 
+  <!-- Enhanced Letter "E" -->
+  <g transform="translate(50,50)">
+    <!-- Main E structure with rounded corners -->
+    <path d="M-16,-20 L12,-20 Q14,-20 14,-18 Q14,-16 12,-16 L-12,-16 L-12,-4 L8,-4 Q10,-4 10,-2 Q10,0 8,0 L-12,0 L-12,12 L12,12 Q14,12 14,14 Q14,16 12,16 L-16,16 Q-18,16 -18,14 L-18,-18 Q-18,-20 -16,-20 Z" 
+          fill="url(#letterGradient)" 
+          filter="url(#shadow)"/>
+    
+    <!-- Stylized cursor/text indicator -->
+    <rect x="15" y="-2" width="2" height="16" fill="url(#letterGradient)" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite"/>
+    </rect>
+    
+    <!-- Typography elements (small decorative serifs) -->
+    <circle cx="-16" cy="-25" r="1.5" fill="url(#letterGradient)" opacity="0.6"/>
+    <circle cx="12" cy="-25" r="1.5" fill="url(#letterGradient)" opacity="0.6"/>
+    <circle cx="12" cy="21" r="1.5" fill="url(#letterGradient)" opacity="0.6"/>
+  </g>
+  
+  <!-- Subtle highlight -->
+  <circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="0.5" opacity="0.3"/>
+</svg>

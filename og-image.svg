@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="ogBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="ogLetter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe"/>
+      <stop offset="100%" style="stop-color:#00f2fe"/>
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#f8f9ff"/>
+    </linearGradient>
+    <filter id="ogShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#ogBg)"/>
+  
+  <!-- Decorative pattern -->
+  <g opacity="0.1">
+    <circle cx="100" cy="100" r="2" fill="white"/>
+    <circle cx="200" cy="150" r="1.5" fill="white"/>
+    <circle cx="1100" cy="80" r="2" fill="white"/>
+    <circle cx="1000" cy="120" r="1" fill="white"/>
+    <circle cx="150" cy="500" r="1.5" fill="white"/>
+    <circle cx="1050" cy="450" r="2" fill="white"/>
+    <circle cx="50" cy="300" r="1" fill="white"/>
+    <circle cx="1150" cy="350" r="1.5" fill="white"/>
+  </g>
+  
+  <!-- Main logo circle -->
+  <g transform="translate(300,315)">
+    <circle cx="0" cy="0" r="120" fill="white" opacity="0.15" filter="url(#ogShadow)"/>
+    <circle cx="0" cy="0" r="100" fill="white"/>
+    
+    <!-- Large "E" -->
+    <g transform="scale(2.5)">
+      <path d="M-16,-20 L12,-20 Q14,-20 14,-18 Q14,-16 12,-16 L-12,-16 L-12,-4 L8,-4 Q10,-4 10,-2 Q10,0 8,0 L-12,0 L-12,12 L12,12 Q14,12 14,14 Q14,16 12,16 L-16,16 Q-18,16 -18,14 L-18,-18 Q-18,-20 -16,-20 Z" 
+            fill="url(#ogLetter)" 
+            filter="url(#ogShadow)"/>
+      
+      <!-- Animated cursor -->
+      <rect x="15" y="-2" width="2" height="16" fill="url(#ogLetter)" opacity="0.8">
+        <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+  </g>
+  
+  <!-- Main title -->
+  <text x="500" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="url(#textGradient)" filter="url(#ogShadow)">
+    EasyTypeface
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="500" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="400" fill="white" opacity="0.9">
+    Try and test fonts with ease
+  </text>
+  
+  <!-- Font preview samples -->
+  <g transform="translate(500,420)" opacity="0.8">
+    <text x="0" y="0" font-family="serif" font-size="24" fill="white">Aa</text>
+    <text x="60" y="0" font-family="sans-serif" font-size="24" fill="white">Bb</text>
+    <text x="120" y="0" font-family="monospace" font-size="24" fill="white">Cc</text>
+    <text x="180" y="0" font-family="cursive" font-size="24" fill="white">Dd</text>
+    <text x="240" y="0" font-family="fantasy" font-size="24" fill="white">Ee</text>
+  </g>
+  
+  <!-- Bottom accent line -->
+  <rect x="500" y="480" width="400" height="2" fill="white" opacity="0.3" rx="1"/>
+</svg>
