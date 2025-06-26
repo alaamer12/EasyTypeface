@@ -26,7 +26,7 @@ No special prerequisites are needed. The application runs directly in the browse
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/easy-typeface.git
+   git clone https://github.com/alaamer12/EasyTypefacee.git
    ```
 
 2. Open `index.html` in your web browser.
@@ -52,7 +52,7 @@ To add a new font from Google Fonts:
 ## Project Structure
 
 ```
-easy-typeface/
+EasyTypefacee/
 ├── index.html        # Main HTML file
 ├── style.css         # Styles and theming
 ├── script.js         # JavaScript functionality
