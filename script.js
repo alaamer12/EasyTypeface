@@ -47,184 +47,23 @@ dialogForm.addEventListener('submit', async (e) => {
     const fontUrl = document.getElementById('fontUrl').value;
     const isRTL = document.getElementById('isRTL').checked;
 
+    // Show loading toast
+    const loadingToast = showToast('Loading font...', 'info');
+    
     try {
-        // Handle Google Fonts URL
-        if (!fontUrl.includes('fonts.googleapis.com')) {
-            throw new Error('Please provide a valid Google Fonts URL');
+        const success = await fontManager.loadFont(fontUrl, isRTL);
+        
+        if (success) {
+            // Reset form and close dialog
+            dialogForm.reset();
+            dialog.close();
         }
-
-        // Parse URL and get all font families
-        const urlParams = new URLSearchParams(fontUrl.split('?')[1]);
-        const fontFamilies = urlParams.getAll('family');
-        if (!fontFamilies.length) {
-            throw new Error('Invalid Google Fonts URL format');
-        }
-
-        console.log('Found font families:', fontFamilies);
-
-        // Process each font family
-        for (const familyParam of fontFamilies) {
-            console.log('Processing font family:', familyParam);
-            
-            // Parse font details
-            const [fontFamily, variationString] = familyParam.split(':');
-            const fontName = fontFamily.replace(/\+/g, ' ');
-            console.log('Font name:', fontName, 'Variations:', variationString);
-
-            // Parse variations
-            let weights = ['400']; // Default weight
-            let hasItalic = false;
-            let italicWeights = new Set(); // Track which weights have italic
-
-            if (variationString) {
-                if (variationString.includes('@')) {
-                    // Handle format: ital,wght@0,400..800;1,400..800
-                    const variations = variationString.split('@')[1].split(';');
-                    for (const variation of variations) {
-                        const [features, range] = variation.split(',');
-                        if (range && range.includes('..')) {
-                            const [min, max] = range.split('..').map(Number);
-                            const step = (max - min) <= 300 ? 100 : 100;
-                            for (let w = min; w <= max; w += step) {
-                                weights.push(w.toString());
-                            }
-                            if (!weights.includes(max.toString())) {
-                                weights.push(max.toString());
-                            }
-                            // If this is an italic variation (features starts with 1)
-                            if (features.startsWith('1')) {
-                                weights.forEach(w => italicWeights.add(w));
-                                hasItalic = true;
-                            }
-                        }
-                    }
-                    // Remove duplicates and sort weights
-                    weights = [...new Set(weights)].sort((a, b) => Number(a) - Number(b));
-                } else {
-                    // Handle the URLSearchParams format
-                    const params = new URLSearchParams(variationString);
-                    if (params.has('wght')) {
-                        const weightParam = params.get('wght');
-                        if (weightParam.includes('..')) {
-                            const [min, max] = weightParam.split('..').map(Number);
-                            weights = [];
-                            const step = (max - min) <= 300 ? 100 : 100;
-                            for (let w = min; w <= max; w += step) {
-                                weights.push(w.toString());
-                            }
-                            if (!weights.includes(max.toString())) {
-                                weights.push(max.toString());
-                            }
-                        } else {
-                            weights = weightParam.split(';').filter(w => w);
-                        }
-                    }
-                    if (params.has('ital')) {
-                        hasItalic = true;
-                        // All weights have italic in this format
-                        weights.forEach(w => italicWeights.add(w));
-                    }
-                }
-            }
-
-            console.log('Weights:', weights, 'Italic weights:', [...italicWeights]);
-
-            // Add font stylesheet if not already added
-            const existingLink = document.querySelector(`link[href="${fontUrl}"]`);
-            if (!existingLink) {
-                console.log('Adding stylesheet:', fontUrl);
-                const linkEl = document.createElement('link');
-                linkEl.rel = 'stylesheet';
-                linkEl.href = fontUrl;
-                document.head.appendChild(linkEl);
-
-                // Wait for font to load
-                await new Promise((resolve, reject) => {
-                    const timeoutId = setTimeout(() => {
-                        reject(new Error('Font loading timed out'));
-                    }, 5000);
-
-                    linkEl.onload = async () => {
-                        console.log('Stylesheet loaded for:', fontName);
-                        clearTimeout(timeoutId);
-                        
-                        setTimeout(async () => {
-                            try {
-                                const font = new FontFaceObserver(fontName);
-                                await font.load(null, 3000);
-                                console.log('Font loaded successfully:', fontName);
-                                resolve();
-                            } catch (err) {
-                                console.error('Font loading error:', err);
-                                reject(new Error('Font failed to load properly'));
-                            }
-                        }, 100);
-                    };
-
-                    linkEl.onerror = (err) => {
-                        console.error('Stylesheet loading error:', err);
-                        clearTimeout(timeoutId);
-                        reject(new Error('Failed to load font stylesheet'));
-                    };
-                });
-            }
-
-            // Create new font card
-            console.log('Creating font card for:', fontName);
-            const fontCard = document.createElement('div');
-            fontCard.className = 'font-card';
-            
-            // Generate a random pastel background color
-            const hue = Math.floor(Math.random() * 360);
-            fontCard.style.backgroundColor = `hsl(${hue}, 60%, 90%)`;
-
-            // Sample text based on direction
-            const sampleText = isRTL ? 'مرحبا بكم في عالم الخطوط الجميلة' : 'The quick brown fox jumps over the lazy dog';
-
-            // Create variations HTML
-            const variationsHTML = weights.map(weight => `
-                <div class="variation">
-                    <div class="variation-label">Weight ${weight}</div>
-                    <div class="font-example" style="font-family: '${fontName}'; font-weight: ${weight}; direction: ${isRTL ? 'rtl' : 'ltr'}">${sampleText}</div>
-                    ${italicWeights.has(weight) ? `
-                        <div class="variation-label">Italic Weight ${weight}</div>
-                        <div class="font-example" style="font-family: '${fontName}'; font-weight: ${weight}; font-style: italic; direction: ${isRTL ? 'rtl' : 'ltr'}">${sampleText}</div>
-                    ` : ''}
-                </div>
-            `).join('');
-
-            fontCard.innerHTML = `
-                <div class="font-card-header">
-                    <div class="font-header-content">
-                        <div class="font-name">${fontName}</div>
-                        <div class="preview-text" style="font-family: '${fontName}'; direction: ${isRTL ? 'rtl' : 'ltr'}">${sampleText}</div>
-                    </div>
-                    <button class="toggle-btn">▼</button>
-                </div>
-                <div class="font-card-content">
-                    <div class="font-variations">
-                        ${variationsHTML}
-                    </div>
-                </div>
-            `;
-
-            // Add event listener to toggle button
-            const toggleBtn = fontCard.querySelector('.toggle-btn');
-            toggleBtn.addEventListener('click', () => {
-                fontCard.classList.toggle('expanded');
-            });
-
-            // Add the new card to the showcase
-            document.querySelector('.font-showcase').appendChild(fontCard);
-        }
-
-        // Reset form and close dialog
-        dialogForm.reset();
-        dialog.close();
-
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        showToast(`Error: ${error.message}`, 'error');
         console.error('Font loading error:', error);
+    } finally {
+        // Remove loading toast
+        loadingToast.remove();
     }
 });
 
@@ -474,6 +313,11 @@ class FontManager {
         const hue = Math.floor(Math.random() * 360);
         card.style.backgroundColor = `hsl(${hue}, 60%, 90%)`;
         
+        // For dark theme compatibility
+        if (document.documentElement.getAttribute('data-theme') === 'dark') {
+            card.style.backgroundColor = `hsl(${hue}, 30%, 20%)`;
+        }
+        
         // Sample text based on direction
         const sampleText = isRTL ? this.defaultRTLText : this.defaultSampleText;
         const direction = isRTL ? 'rtl' : 'ltr';
@@ -507,8 +351,25 @@ class FontManager {
         card.querySelector('.font-details').textContent = this.getFontDescription(fontName);
         card.querySelector('.font-license').textContent = 'License: Google Fonts';
         
-        // Add event listeners
-        this.addCardEventListeners(card);
+        // Add event listeners for toggle button
+        const toggleBtn = card.querySelector('.toggle-btn');
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            card.classList.toggle('expanded');
+        });
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('expanded');
+        });
+        
+        // Ensure canvas button is present and functional
+        const canvasBtn = card.querySelector('.canvas-btn');
+        if (canvasBtn) {
+            canvasBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openCanvasPanel(card);
+            });
+        }
         
         // Initialize Feather icons for the new card
         if (typeof feather !== 'undefined') {
@@ -570,19 +431,6 @@ class FontManager {
         } else {
             return 'A versatile font suitable for various design applications';
         }
-    }
-
-    addCardEventListeners(card) {
-        const toggleBtn = card.querySelector('.toggle-btn');
-        
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            card.classList.toggle('expanded');
-        });
-
-        card.addEventListener('click', () => {
-            card.classList.toggle('expanded');
-        });
     }
 }
 
@@ -864,15 +712,37 @@ function initializeCanvasPanel() {
         updateCanvasFontSize(canvasSizeSelect.value);
     });
     
-    // Add click event to canvas buttons (will be delegated for dynamically added elements)
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.canvas-btn')) {
-            const fontCard = e.target.closest('.font-card');
-            if (fontCard) {
-                openCanvasPanel(fontCard);
-            }
-        }
-    });
+    // Define the openCanvasPanel function in global scope so it can be accessed
+    // by the event listener in the FontManager class
+    window.openCanvasPanel = function(fontCard) {
+        // Get font info
+        const fontName = fontCard.querySelector('.font-name').textContent;
+        const isRTL = fontCard.querySelector('.rtl-text') && 
+                      fontCard.querySelector('.rtl-text').style.display !== 'none';
+        const direction = isRTL ? 'rtl' : 'ltr';
+        
+        // Update canvas panel title
+        document.querySelector('.canvas-font-name').textContent = fontName;
+        
+        // Get variations
+        const variations = [];
+        fontCard.querySelectorAll('.variation').forEach(variation => {
+            const label = variation.querySelector('.variation-label').textContent;
+            const style = variation.querySelector('.font-example').getAttribute('style');
+            variations.push({ label, style });
+        });
+        
+        // Generate canvas content
+        generateCanvasContent(fontName, variations, isRTL);
+        
+        // Set initial background and size
+        updateCanvasBackground(canvasBgSelect.value);
+        updateCanvasFontSize(canvasSizeSelect.value);
+        
+        // Show canvas with animation
+        canvasPanel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
     
     // Helper functions
     function updateCanvasBackground(bgType) {
@@ -928,36 +798,6 @@ function initializeCanvasPanel() {
             el.className = 'canvas-font-display';
             el.classList.add(`canvas-size-${sizeType}`);
         });
-    }
-    
-    function openCanvasPanel(fontCard) {
-        // Get font info
-        const fontName = fontCard.querySelector('.font-name').textContent;
-        const isRTL = fontCard.querySelector('.rtl-text') && 
-                      fontCard.querySelector('.rtl-text').style.display !== 'none';
-        const direction = isRTL ? 'rtl' : 'ltr';
-        
-        // Update canvas panel title
-        document.querySelector('.canvas-font-name').textContent = fontName;
-        
-        // Get variations
-        const variations = [];
-        fontCard.querySelectorAll('.variation').forEach(variation => {
-            const label = variation.querySelector('.variation-label').textContent;
-            const style = variation.querySelector('.font-example').getAttribute('style');
-            variations.push({ label, style });
-        });
-        
-        // Generate canvas content
-        generateCanvasContent(fontName, variations, isRTL);
-        
-        // Set initial background and size
-        updateCanvasBackground(canvasBgSelect.value);
-        updateCanvasFontSize(canvasSizeSelect.value);
-        
-        // Show canvas with animation
-        canvasPanel.classList.add('active');
-        document.body.style.overflow = 'hidden';
     }
     
     function generateCanvasContent(fontName, variations, isRTL) {
