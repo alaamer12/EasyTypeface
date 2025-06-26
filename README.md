@@ -1,7 +1,7 @@
 # EasyTypeface
 
 <div align="center">
-  <img src="logo.svg" alt="EasyTypeface Logo" width="100" height="100">
+  <img src="assets/logo.svg" alt="EasyTypeface Logo" width="100" height="100">
 </div>
 
 A beautiful, responsive showcase for exploring and testing web fonts. EasyTypeface allows you to visualize and compare different typefaces with support for multiple weights, styles, and RTL languages.
