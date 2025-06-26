@@ -876,19 +876,23 @@ function initializeCanvasPanel() {
     
     // Helper functions
     function updateCanvasBackground(bgType) {
-        canvasContent.className = 'canvas-content';
+        canvasContent.className = 'canvas-content'; // Resets to base class
         canvasContent.classList.add(`canvas-bg-${bgType}`);
         
-        // If gradient is selected, apply random gradients to each section
+        const sections = document.querySelectorAll('.canvas-section');
+        const gradientClasses = ['gradient-1', 'gradient-2', 'gradient-3', 'gradient-4', 'gradient-5', 'gradient-6'];
+        const colorClasses = ['colored-1', 'colored-2', 'colored-3', 'colored-4', 'colored-5', 'colored-6'];
+
+        // Clean up all special section background classes first
+        sections.forEach(section => {
+            gradientClasses.forEach(cls => section.classList.remove(cls));
+            colorClasses.forEach(cls => section.classList.remove(cls));
+        });
+        
         if (bgType === 'gradient') {
             applyRandomGradients();
-        } else {
-            // Remove gradient classes when not in gradient mode
-            document.querySelectorAll('.canvas-section').forEach(section => {
-                for (let i = 1; i <= 6; i++) {
-                    section.classList.remove(`gradient-${i}`);
-                }
-            });
+        } else if (bgType === 'colored') {
+            applyRandomColors();
         }
     }
     
@@ -896,13 +900,25 @@ function initializeCanvasPanel() {
         const sections = document.querySelectorAll('.canvas-section');
         const gradientClasses = ['gradient-1', 'gradient-2', 'gradient-3', 'gradient-4', 'gradient-5', 'gradient-6'];
         
-        sections.forEach(section => {
-            // Remove any existing gradient classes
-            gradientClasses.forEach(cls => section.classList.remove(cls));
-            
-            // Apply a random gradient class
-            const randomGradient = gradientClasses[Math.floor(Math.random() * gradientClasses.length)];
-            section.classList.add(randomGradient);
+        // Shuffle classes to ensure different gradients on each refresh
+        const shuffledClasses = gradientClasses.sort(() => 0.5 - Math.random());
+
+        sections.forEach((section, index) => {
+            // Apply a class from the shuffled list, cycling through if necessary
+            section.classList.add(shuffledClasses[index % shuffledClasses.length]);
+        });
+    }
+
+    function applyRandomColors() {
+        const sections = document.querySelectorAll('.canvas-section');
+        const colorClasses = ['colored-1', 'colored-2', 'colored-3', 'colored-4', 'colored-5', 'colored-6'];
+        
+        // Shuffle classes
+        const shuffledClasses = colorClasses.sort(() => 0.5 - Math.random());
+
+        sections.forEach((section, index) => {
+            // Apply a class from the shuffled list
+            section.classList.add(shuffledClasses[index % shuffledClasses.length]);
         });
     }
     

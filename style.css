@@ -1022,6 +1022,14 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus {
     }
 }
 
+/* Colored backgrounds for sections */
+.canvas-section.colored-1 { background-color: #f0e6ff; color: #333; }
+.canvas-section.colored-2 { background-color: #e6f5ee; color: #333; }
+.canvas-section.colored-3 { background-color: #fff0e6; color: #333; }
+.canvas-section.colored-4 { background-color: #e6f0ff; color: #333; }
+.canvas-section.colored-5 { background-color: #fff5e6; color: #333; }
+.canvas-section.colored-6 { background-color: #f0ffe6; color: #333; }
+
 /* Gradient backgrounds for sections */
 .canvas-section.gradient-1 {
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
